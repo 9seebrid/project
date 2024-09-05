@@ -23,8 +23,6 @@ const Media = () => {
     return () => clearTimeout(timer);
   }, []);
 
-
-  
   //   const updateSize = () => {
   //     const videoWrap = document.querySelector("#video-wrap");
   //     const video = document.querySelector("#video");
@@ -40,7 +38,6 @@ const Media = () => {
   //       video.classList.remove("is-vertical")
   //     }
   //   }
- 
 
   // useLayoutEffect(()=>{
   //   window.addEventListener("resize", updateSize);
@@ -60,8 +57,8 @@ const Media = () => {
         </div>
       )}
       {video && (
-        <div className="video" >
-          <div style={{ height: '50%', width: '100%',position:'relative', top:'6px' }} id="video-wrap">
+        <div className="video">
+          <div style={{ height: '50%', width: '100%', position: 'relative', top: '6px' }} id="video-wrap">
             <ReactPlayer
               url="/mainvideo01.mp4"
               controls={false}
@@ -72,11 +69,11 @@ const Media = () => {
               className="reactplayer_01"
               loop={true}
               muted={true}
-              style={{ objectFit: 'fill', position:'absolute' }}
+              style={{ objectFit: 'fill', position: 'absolute', marginTop: '54.5px' }}
               id="video"
             />
           </div>
-          <div style={{ height: '50%', width: '100%', position:'relative' }} id="video-wrap">
+          <div style={{ height: '50%', width: '100%', position: 'relative' }} id="video-wrap">
             <ReactPlayer
               url="/mainvideo02.mp4"
               controls={false}
@@ -84,10 +81,9 @@ const Media = () => {
               width="100%"
               height="100%"
               className="reactplayer_02"
-             
               loop={true}
               muted={true}
-              style={{ objectFit: 'cover', position:'absolute', bottom:'-20px' }}
+              style={{ objectFit: 'cover', position: 'absolute', bottom: '-20px' }}
               id="video"
             />
           </div>
@@ -98,4 +94,3 @@ const Media = () => {
 };
 
 export default Media;
-
