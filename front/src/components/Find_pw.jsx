@@ -15,7 +15,6 @@
 //     const [foundPw, setFoundPw] = useState(null); // 아이디를 저장할 상태
 //     const [errorMessage, setErrorMessage] = useState(null); // 에러 메시지 상태
 
-
 //     const handleSubmit = (e) => {
 //         e.preventDefault();
 
@@ -40,7 +39,7 @@
 //             return;
 //         }
 
-//         axios.post('http://localhost:8080/findUser', values)
+//         axios.post('http://project.9seebird.site:8080/findUser', values)
 //         .then((res) => {
 //             if (res.status === 200) {
 //                 setFoundPw(res.data.userPw); // 서버에서 받은 비밀번호를 저장
@@ -54,7 +53,6 @@
 //         });
 //     };
 
-    
 //     const [cellphoneIdentify, setCellPhoneIdentify] = useState('010');
 //     const cellphoneList = ['010', '011', '016', '017', '018', '019'];
 
@@ -71,9 +69,6 @@
 //         const sanitizedValue = value.replace(/[^0-9]/g, "");  // 숫자 이외의 문자는 제거
 //         setValues({ ...values, [name]: sanitizedValue });
 //     };
-
-
-       
 
 //     return (
 //         <div>
@@ -113,7 +108,7 @@
 //                         <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
 //                             <select
 //                                 value={cellphoneIdentify}
-//                                 onChange={handleCellPhoneIdentifyChange}  
+//                                 onChange={handleCellPhoneIdentifyChange}
 //                                 className="form-control"
 //                                 style={{ width: '100px' }}
 //                             >

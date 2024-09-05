@@ -8,7 +8,7 @@ const Product = () => {
 
   useEffect(() => {
     // 서버가 먼저 실행되어야 성공적으로 연결됩니다.
-    axios.get('http://localhost:8080/get_products').then((response) => {
+    axios.get('http://project.9seebird.site:8080/get_products').then((response) => {
       // console.log(response.data);
       setPdata(response.data);
     });

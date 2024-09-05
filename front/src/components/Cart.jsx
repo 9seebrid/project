@@ -12,9 +12,9 @@ const Cart = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [isNormal, setIsNormal] = useState(true);
   const [totalPrice, setTotalPrice] = useState('');
-  const [diPrice, setDiyPrice] = useState('')
+  const [diPrice, setDiyPrice] = useState('');
   const { productId } = useParams();
-  const [diyItem, setDiyItems] = useState([])
+  const [diyItem, setDiyItems] = useState([]);
   const openItems = () => {
     setIsOpen(!isOpen);
   };
@@ -23,31 +23,30 @@ const Cart = () => {
   };
   //  선택상품 보내기
   const [checkItems, setCheckItems] = useState([]);
-  const handleSingleCheck = (checked, productId, productSize, quantity, isDiy = false, cartItemId = null,) => {
+  const handleSingleCheck = (checked, productId, productSize, quantity, isDiy = false, cartItemId = null) => {
     if (checked) {
       // 배열에 선택된 아이템 추가
-      setCheckItems((prev) => [...prev, { productId, productSize, quantity, isDiy, cartItemId, }]);
+      setCheckItems((prev) => [...prev, { productId, productSize, quantity, isDiy, cartItemId }]);
     } else {
       // 선택 해제된 아이템을 배열에서 제거
       setCheckItems((prev) =>
         prev.filter(
-          (item) =>
-            !(item.productId === productId && item.productSize === productSize && item.isDiy === isDiy)
+          (item) => !(item.productId === productId && item.productSize === productSize && item.isDiy === isDiy)
         )
       );
     }
   };
-  
+
   const selectedPurchase = () => {
     if (checkItems.length === 0) {
       alert('선택된 상품이 없습니다.');
       return;
     }
-  
+
     const selectedItems = checkItems.map((item) => {
       if (item.isDiy) {
         // DIY 아이템의 경우
-        const diyItemm = diyItem.find(diy => diy.cart_item_id === item.cartItemId);
+        const diyItemm = diyItem.find((diy) => diy.cart_item_id === item.cartItemId);
         return {
           productId: item.productId,
           productSize: null, // DIY는 사이즈가 없으므로 null
@@ -56,7 +55,7 @@ const Cart = () => {
           price: diyItemm?.details?.p_price || '', // DIY 아이템의 가격
           img: diyItemm?.details?.p_main_img || '', // DIY 아이템의 이미지
           details: diyItemm?.details || {}, // Include details
-          selected_options: diyItemm?.selected_options || [], 
+          selected_options: diyItemm?.selected_options || [],
         };
       } else {
         // 일반 아이템의 경우
@@ -82,13 +81,12 @@ const Cart = () => {
         };
       }
     });
-  
+
     navigate('/purchase', {
       state: { selectedItems },
     });
     console.log(checkItems);
   };
-  
 
   // 전체 상품 주문
 
@@ -105,19 +103,19 @@ const Cart = () => {
       },
     });
   };
-  const handleDiyPurchase= (item) =>{
+  const handleDiyPurchase = (item) => {
     navigate('/purchase', {
-      state : {
-        productId : item.product_id,
-        productName : item.details?.p_name,
-        productSize : null,
-        quantity : item.quantity,
-        price : item.details?.p_price,
-        img : item.details?.p_main_img,
-        selected_options: item.selected_options || [], 
-      }
-    })
-  }
+      state: {
+        productId: item.product_id,
+        productName: item.details?.p_name,
+        productSize: null,
+        quantity: item.quantity,
+        price: item.details?.p_price,
+        img: item.details?.p_main_img,
+        selected_options: item.selected_options || [],
+      },
+    });
+  };
   const handleOrderAll = () => {
     // 일반 상품 아이템 처리
     const allItems = carts.map((item) => ({
@@ -129,36 +127,35 @@ const Cart = () => {
       img: item.product_size === '80g' ? item.details?.p_main_img : item.details?.p_main_img_1,
       details: item.details, // Include details
     }));
-  
+
     // DIY 상품 아이템 처리
     const diyItemsMapped = diyItem.map((item) => ({
       productId: item.product_id,
-      productSize: null,  // DIY 아이템은 사이즈가 없으므로 null로 설정
+      productSize: null, // DIY 아이템은 사이즈가 없으므로 null로 설정
       quantity: item.quantity,
       productName: item.details?.p_name, // DIY 아이템의 이름
-      price: item.details?.p_price,      // DIY 아이템의 가격
-      img: item.details?.p_main_img,     // DIY 아이템의 이미지
-      details: item.details,   
-      selected_options: item.selected_options || [],          // Include details
+      price: item.details?.p_price, // DIY 아이템의 가격
+      img: item.details?.p_main_img, // DIY 아이템의 이미지
+      details: item.details,
+      selected_options: item.selected_options || [], // Include details
     }));
-  
+
     // 일반 상품과 DIY 상품을 합침
     const allItemsWithDiy = [...allItems, ...diyItemsMapped];
-  
+
     // 구매 페이지로 이동
     navigate('/purchase', {
       state: { selectedItems: allItemsWithDiy },
     });
   };
-  
 
   useEffect(() => {
     const fetchCarts = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/get_cart/${userId}`);
-        const {cartItems, diyItems } = response.data;
+        const response = await axios.get(`http://project.9seebird.site:8080/get_cart/${userId}`);
+        const { cartItems, diyItems } = response.data;
         const productRequests = cartItems.map((item) =>
-          axios.get(`http://localhost:8080/get_detail_products/${item.product_id}`)
+          axios.get(`http://project.9seebird.site:8080/get_detail_products/${item.product_id}`)
         );
 
         const productResponses = await Promise.all(productRequests);
@@ -168,13 +165,11 @@ const Cart = () => {
           details: productResponses[index].data[0],
         }));
 
-
-
         const diyRequests = diyItems.map((item) =>
-          axios.get(`http://localhost:8080/get_detail_products/${item.product_id}`)
+          axios.get(`http://project.9seebird.site:8080/get_detail_products/${item.product_id}`)
         );
         const diyResponses = await Promise.all(diyRequests);
-  
+
         const productsWithDiyDetails = diyItems.map((item, index) => ({
           ...item,
           details: diyResponses[index].data[0],
@@ -185,18 +180,17 @@ const Cart = () => {
           }
           return (a.product_size || '').localeCompare(b.product_size || '');
         });
-  
+
         // 정렬: DIY 상품은 cart_item_id 기준으로 정렬
         const sortedDiyItems = productsWithDiyDetails.sort((a, b) => a.cart_item_id - b.cart_item_id);
-  
+
         // 상태 업데이트
         setCarts(sortedCarts);
         setDiyItems(sortedDiyItems);
-  
+
         // 가격 계산
         calculateTotalPrice(sortedCarts);
         calculateDiyPrice(sortedDiyItems);
-  
       } catch (error) {
         console.log('Error fetching carts:', error);
       }
@@ -209,163 +203,146 @@ const Cart = () => {
       const itemPrice = parseInt(item.details?.[itemPriceKey]?.replace(/,/g, ''), 10) || 0;
       return sum + itemPrice * (item.quantity || 1);
     }, 0);
-  
+
     return total;
   };
-  
+
   const calculateDiyPrice = (diyItem) => {
     const total = diyItem.reduce((sum, item) => {
       const diyPrice = parseInt(item.details?.p_price.replace(/,/g, ''), 10) || 0;
       return sum + diyPrice * (item.quantity || 1);
     }, 0);
-  
+
     return total;
   };
-  
+
   useEffect(() => {
     if (carts && diyItem) {
       const cartTotal = calculateTotalPrice(carts);
       const diyTotal = calculateDiyPrice(diyItem);
       const grandTotal = cartTotal + diyTotal;
-  
+
       const formattedTotal = new Intl.NumberFormat().format(grandTotal);
       setTotalPrice(formattedTotal);
-  
     }
   }, [carts, diyItem]);
-  
 
-  
-  
   const quantityChange = async (userId, productId, productSize, newQuantity, cartItemId) => {
     try {
       if (newQuantity < 1) return;
-  
-      const requestBody = cartItemId
-        ? { cartItemId, newQuantity }
-        : { productId, productSize, newQuantity };
-  
+
+      const requestBody = cartItemId ? { cartItemId, newQuantity } : { productId, productSize, newQuantity };
+
       // 수량 업데이트 요청
-      await axios.post(`http://localhost:8080/update_quantity/${userId}`, requestBody);
-  
+      await axios.post(`http://project.9seebird.site:8080/update_quantity/${userId}`, requestBody);
+
       // 장바구니와 DIY 아이템 모두 새로 가져오기
-      const response = await axios.get(`http://localhost:8080/get_cart/${userId}`);
+      const response = await axios.get(`http://project.9seebird.site:8080/get_cart/${userId}`);
       const { cartItems, diyItems } = response.data;
-  
+
       // 장바구니와 DIY 아이템의 상세 정보를 가져옵니다.
-      const productRequests = cartItems.map(item =>
-        axios.get(`http://localhost:8080/get_detail_products/${item.product_id}`)
+      const productRequests = cartItems.map((item) =>
+        axios.get(`http://project.9seebird.site:8080/get_detail_products/${item.product_id}`)
       );
       const productResponses = await Promise.all(productRequests);
-  
+
       const productsWithDetails = cartItems.map((item, index) => ({
         ...item,
         details: productResponses[index].data[0],
       }));
-  
-      const diyRequests = diyItems.map(item =>
-        axios.get(`http://localhost:8080/get_detail_products/${item.product_id}`)
+
+      const diyRequests = diyItems.map((item) =>
+        axios.get(`http://project.9seebird.site:8080/get_detail_products/${item.product_id}`)
       );
       const diyResponses = await Promise.all(diyRequests);
-  
+
       const productsWithDiyDetails = diyItems.map((item, index) => ({
         ...item,
         details: diyResponses[index].data[0],
       }));
-  
- // 정렬 기준을 정의합니다
- const sortedCartItems = productsWithDetails.sort((a, b) => {
-  if (a.product_id !== b.product_id) {
-    return a.product_id - b.product_id;
-  }
-  return (a.product_size || '').localeCompare(b.product_size || '');
-});
 
-const sortedDiyItems = productsWithDiyDetails.sort((a, b) => a.cart_item_id - b.cart_item_id);
+      // 정렬 기준을 정의합니다
+      const sortedCartItems = productsWithDetails.sort((a, b) => {
+        if (a.product_id !== b.product_id) {
+          return a.product_id - b.product_id;
+        }
+        return (a.product_size || '').localeCompare(b.product_size || '');
+      });
 
-// 상태 업데이트
-setCarts(sortedCartItems);
-setDiyItems(sortedDiyItems);
+      const sortedDiyItems = productsWithDiyDetails.sort((a, b) => a.cart_item_id - b.cart_item_id);
 
-// 총 가격 재계산
-calculateTotalPrice(sortedCartItems);
-calculateDiyPrice(sortedDiyItems);
+      // 상태 업데이트
+      setCarts(sortedCartItems);
+      setDiyItems(sortedDiyItems);
 
-  
+      // 총 가격 재계산
+      calculateTotalPrice(sortedCartItems);
+      calculateDiyPrice(sortedDiyItems);
     } catch (error) {
       console.log('Failed to update quantity', error.response || error.message);
     }
   };
-  
-  
-  
-
-  
 
   const noItem = async (userId, productId, productSize, cartItemId) => {
     try {
       const isDiyItem = productSize === null;
 
-    
       if (isDiyItem) {
         // DIY 아이템 삭제 요청
-        await axios.post(`http://localhost:8080/delete_item/${userId}`, { cartItemId });
+        await axios.post(`http://project.9seebird.site:8080/delete_item/${userId}`, { cartItemId });
       } else {
         // 일반 아이템 삭제 요청
-        await axios.post(`http://localhost:8080/delete_item/${userId}`, { productId, productSize });
+        await axios.post(`http://project.9seebird.site:8080/delete_item/${userId}`, { productId, productSize });
       }
-  
+
       // 장바구니에서 삭제된 아이템 필터링
-      let updatedCarts = carts.filter((item) =>
-        !(item.product_id === productId && item.product_size === productSize) &&
-        !(item.is_bundle && item.cart_item_id === cartItemId)
+      let updatedCarts = carts.filter(
+        (item) =>
+          !(item.product_id === productId && item.product_size === productSize) &&
+          !(item.is_bundle && item.cart_item_id === cartItemId)
       );
-  
+
       // 일반 아이템의 상세 정보 요청
       const productRequests = updatedCarts
-        .filter(item => !item.is_bundle)  // is_bundle이 false인 경우에만 요청
-        .map((item) =>
-          axios.get(`http://localhost:8080/get_detail_products/${item.product_id}`)
-        );
-  
+        .filter((item) => !item.is_bundle) // is_bundle이 false인 경우에만 요청
+        .map((item) => axios.get(`http://project.9seebird.site:8080/get_detail_products/${item.product_id}`));
+
       const productResponses = await Promise.all(productRequests);
-  
+
       updatedCarts = updatedCarts.map((item) => {
         // 일반 아이템의 경우
         if (!item.is_bundle) {
           return {
             ...item,
-            details: productResponses.find(response => response.data[0].product_id === item.product_id)?.data[0] || item.details,
+            details:
+              productResponses.find((response) => response.data[0].product_id === item.product_id)?.data[0] ||
+              item.details,
           };
         }
         return item;
       });
-  
+
       // DIY 아이템의 경우, details는 이미 포함되어 있어 필터링만 필요
-      const updatedDiyItems = diyItem.filter(item =>
-        item.cart_item_id !== cartItemId
-      );
+      const updatedDiyItems = diyItem.filter((item) => item.cart_item_id !== cartItemId);
       const sortedCarts = updatedCarts.sort((a, b) => {
         if (a.product_id !== b.product_id) {
           return a.product_id - b.product_id;
         }
         return (a.product_size || '').localeCompare(b.product_size || '');
       });
-  
+
       const sortedDiyItems = updatedDiyItems.sort((a, b) => a.cart_item_id - b.cart_item_id);
-  
+
       setCarts(sortedCarts);
       setDiyItems(sortedDiyItems);
-  
+
       calculateTotalPrice(sortedCarts);
       calculateDiyPrice(sortedDiyItems);
     } catch (error) {
       console.log('Failed to delete item', error);
     }
   };
-  
-  
- 
+
   console.log(diyItem);
   return (
     <div className="cart" style={{ height: 'max-content' }}>
@@ -390,8 +367,8 @@ calculateDiyPrice(sortedDiyItems);
               {isNormal ? <div className="cart_normal">일반상품 ({carts.length}) </div> : ''}
             </div>
             <div className="All">
-            <button>전체 선택</button>
-            <button>전체 삭제</button>
+              <button>전체 선택</button>
+              <button>전체 삭제</button>
             </div>
             {carts.map((cart, idx) => {
               const uniqueProductKey = `${cart.product_id}_${cart.product_size}`;
@@ -402,7 +379,13 @@ calculateDiyPrice(sortedDiyItems);
                       type="checkBox"
                       style={{ marginRight: '20px' }}
                       onChange={(e) =>
-                        handleSingleCheck(e.target.checked, cart.product_id, cart.product_size, cart.quantity, cart.selected_options)
+                        handleSingleCheck(
+                          e.target.checked,
+                          cart.product_id,
+                          cart.product_size,
+                          cart.quantity,
+                          cart.selected_options
+                        )
                       }
                       checked={checkItems.some(
                         (item) => item.productId === cart.product_id && item.productSize === cart.product_size
@@ -430,7 +413,6 @@ calculateDiyPrice(sortedDiyItems);
                             </p>
                           </Link>
                           <p>
-                            
                             {cart.product_size === '80g'
                               ? new Intl.NumberFormat().format(
                                   parseInt(cart.details?.p_price.replace(/,/g, '')) * parseInt(cart.quantity)
@@ -487,96 +469,83 @@ calculateDiyPrice(sortedDiyItems);
                   </div>
                 );
             })}
-           
-            {diyItem.map((item,idx)=>(
+
+            {diyItem.map((item, idx) => (
               <>
                 <div className="cart_products">
-                   <input
-      type="checkbox"
-      style={{ marginRight: '20px' }}
-      onChange={(e) =>
-        handleSingleCheck(e.target.checked, item.product_id, null, item.quantity, true, item.cart_item_id)
-      }
-      checked={checkItems.some(
-        (checkedItem) => checkedItem.cartItemId === item.cart_item_id && checkedItem.isDiy === true
-      )}
-    />
-
-                {/* <Link to={`/product_detail/${cart.product_id}`}> */}
-                  {' '}
+                  <input
+                    type="checkbox"
+                    style={{ marginRight: '20px' }}
+                    onChange={(e) =>
+                      handleSingleCheck(e.target.checked, item.product_id, null, item.quantity, true, item.cart_item_id)
+                    }
+                    checked={checkItems.some(
+                      (checkedItem) => checkedItem.cartItemId === item.cart_item_id && checkedItem.isDiy === true
+                    )}
+                  />
+                  {/* <Link to={`/product_detail/${cart.product_id}`}> */}{' '}
                   <div className="cart_left">
-                    <img
-                      src={item.details?.p_main_img}
-                      alt="p_main_img"
-                    />
+                    <img src={item.details?.p_main_img} alt="p_main_img" />
                   </div>
-                {/* </Link> */}
-                <div className="cart_right">
-                  <div className="cart_up">
-                    <div className="cart_up_txt">
-                      {/* <Link */}
+                  {/* </Link> */}
+                  <div className="cart_right">
+                    <div className="cart_up">
+                      <div className="cart_up_txt">
+                        {/* <Link */}
                         {/* // to={`/product_detail/${cart.product_id}`} */}
                         {/* style={{ textDecoration: 'none', color: 'black' }} */}
-                      {/* > */}
+                        {/* > */}
+                        <p>상품이름 : {item.details?.p_name}</p>
+                        {/* </Link> */}
+
+                        <p style={{ color: '#a59b9b', fontSize: '13px' }}>{item.selected_options.join(', ')}</p>
                         <p>
-                          상품이름 : {item.details?.p_name}
+                          {new Intl.NumberFormat().format(
+                            parseInt(item.details?.p_price.replace(/,/g, '')) * parseInt(item.quantity)
+                          )}
+                          원
                         </p>
-                      {/* </Link> */}
-                     
-                      <p style={{color: "#a59b9b", fontSize:"13px" }}>{item.selected_options.join(', ')}</p>
-                      <p>
-                     {new Intl.NumberFormat().format(
-                        parseInt(item.details?.p_price.replace(/,/g, '')) * parseInt(item.quantity)
-                    )  }원
-                      </p>
-                      <p>배송 : [무료] / 기본배송</p>
+                        <p>배송 : [무료] / 기본배송</p>
+                      </div>
+                      <div style={{ width: '100px' }}>
+                        <MdClose
+                          style={{ cursor: 'pointer', height: '30px', width: '30px', color: '#d3d0d0' }}
+                          onClick={() => {
+                            noItem(userId, item.product_id, null, item.cart_item_id);
+                          }}
+                        />
+                      </div>
                     </div>
-                    <div style={{ width: '100px' }}>
-                      <MdClose
-                        style={{ cursor: 'pointer', height: '30px', width: '30px', color: '#d3d0d0' }}
-                        onClick={() => {
-                          noItem(userId, item.product_id, null, item.cart_item_id);
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div className="cart_down">
-                    <div>
-                      <button
-                        className="quantity_btn"
-                        onClick={() =>
-                          quantityChange(userId, null, null, item.quantity - 1, item.cart_item_id)
-                        }
-                      >
-                        -
-                      </button>
-                      <div>{item.quantity}</div>
-                      <button
-                        className="quantity_btn"
-                        onClick={() =>
-                          quantityChange(userId, null, null, item.quantity + 1, item.cart_item_id)
-                        }
-                      >
-                        +
-                      </button>
-                    </div>
-                    <div className="cart_down_btn">
-                      <button>관심상품</button>
-                      <button
-                        onClick={() => {
-                          navigate('/purchase');
-                          handleDiyPurchase(item)
-                        }}
-                      >
-                        주문하기
-                      </button>
+                    <div className="cart_down">
+                      <div>
+                        <button
+                          className="quantity_btn"
+                          onClick={() => quantityChange(userId, null, null, item.quantity - 1, item.cart_item_id)}
+                        >
+                          -
+                        </button>
+                        <div>{item.quantity}</div>
+                        <button
+                          className="quantity_btn"
+                          onClick={() => quantityChange(userId, null, null, item.quantity + 1, item.cart_item_id)}
+                        >
+                          +
+                        </button>
+                      </div>
+                      <div className="cart_down_btn">
+                        <button>관심상품</button>
+                        <button
+                          onClick={() => {
+                            navigate('/purchase');
+                            handleDiyPurchase(item);
+                          }}
+                        >
+                          주문하기
+                        </button>
+                      </div>
                     </div>
                   </div>
-                  
                 </div>
-              
-              </div>
-             
               </>
             ))}
           </div>

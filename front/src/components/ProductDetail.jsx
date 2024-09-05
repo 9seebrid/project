@@ -52,7 +52,7 @@ const ProductDetail = () => {
     };
 
     try {
-      await axios.post(`http://localhost:8080/add_item_detail/${userId}`, cartItem, {
+      await axios.post(`http://project.9seebird.site:8080/add_item_detail/${userId}`, cartItem, {
         headers: { 'Content-Type': 'application/json' },
       });
 
@@ -73,10 +73,10 @@ const ProductDetail = () => {
         let response;
         if (productId === '6') {
           // 모든 제품 데이터를 가져오기 위한 API 호출
-          response = await axios.get('http://localhost:8080/get_product');
+          response = await axios.get('http://project.9seebird.site:8080/get_product');
         } else {
           // 특정 제품 데이터를 가져오기 위한 API 호출
-          response = await axios.get(`http://localhost:8080/get_detail_products/${productId}`);
+          response = await axios.get(`http://project.9seebird.site:8080/get_detail_products/${productId}`);
         }
 
         setPdata(response.data);

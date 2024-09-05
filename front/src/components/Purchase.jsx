@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 const Purchase = () => {
   const ProductImage = ({ imagePath }) => {
-    const baseURL = 'http://localhost:8080'; // 서버의 기본 URL
+    const baseURL = 'http://project.9seebird.site:8080'; // 서버의 기본 URL
     const imageUrl = `${baseURL}${imagePath}`; // 이미지 URL 조합
 
     return <img src={imageUrl} alt="Product" />;
@@ -15,7 +15,8 @@ const Purchase = () => {
   const location = useLocation();
   const navigate = useNavigate();
   // const { selectedItems } = location.state || {}; // 장바구니페이지에서 선택상품만 받기
-  const { selectedItems, productId, productName, productSize, quantity, price, img, selected_options } = location.state || {}; // 기본값 설정
+  const { selectedItems, productId, productName, productSize, quantity, price, img, selected_options } =
+    location.state || {}; // 기본값 설정
   // const selectedProducts = location.state.selectedProducts;
   useEffect(() => {
     console.log('Selected items:', selectedItems); // 데이터가 제대로 전달되었는지 확인
@@ -157,7 +158,7 @@ const Purchase = () => {
   useEffect(() => {
     const fetchEach = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/each_purchase/${userId}`);
+        const response = await axios.get(`http://project.9seebird.site:8080/each_purchase/${userId}`);
         const eachItems = response.data;
         // console.log(eachItems);
         setEach(eachItems);
@@ -360,7 +361,7 @@ const Purchase = () => {
                     <div className="infoSub">
                       <p>{productSize ? productName : productName}</p>
                       <p>수량: {quantity}</p>
-                      <p style={{color : 'rgb(153, 150, 150)'}}>{productSize ? '' :  selected_options.join(', ') }</p>
+                      <p style={{ color: 'rgb(153, 150, 150)' }}>{productSize ? '' : selected_options.join(', ')}</p>
                       <div className="total-price">
                         금액: {(parseInt(setPrice) * quantity).toLocaleString('ko-KR')}원
                       </div>
@@ -373,23 +374,32 @@ const Purchase = () => {
                   ? selectedItems.map((item, idx) => (
                       <div className="productInfo">
                         <div className="infoImage">
-                          <img src=
-                          // {item.img} 
-                          {item.productSize === "130g" ? item.details?.p_main_img_1 : item.details?.p_main_img}
-                          alt="Product" style={{ width: '130px', height: '150px' }} />
+                          <img
+                            src=// {item.img}
+                            {item.productSize === '130g' ? item.details?.p_main_img_1 : item.details?.p_main_img}
+                            alt="Product"
+                            style={{ width: '130px', height: '150px' }}
+                          />
                         </div>
                         <div className="infoSub">
                           <p>{item.productSize ? item.productName : item.details?.p_name}</p>
                           <p>수량: {item.quantity}</p>
-                            <p style={{color : 'rgb(153, 150, 150)'}}>{item.selected_options ? item.selected_options.join(', ') : '' }</p>
+                          <p style={{ color: 'rgb(153, 150, 150)' }}>
+                            {item.selected_options ? item.selected_options.join(', ') : ''}
+                          </p>
                           <div className="total-price">
-                        금액: {item.productSize ? (parseInt(item.price.replace(/,/g, '')) * item.quantity).toLocaleString('ko-KR'): (parseInt(item.details?.p_price.replace(/,/g, '')) * item.quantity).toLocaleString('ko-KR')}원
+                            금액:{' '}
+                            {item.productSize
+                              ? (parseInt(item.price.replace(/,/g, '')) * item.quantity).toLocaleString('ko-KR')
+                              : (parseInt(item.details?.p_price.replace(/,/g, '')) * item.quantity).toLocaleString(
+                                  'ko-KR'
+                                )}
+                            원
                           </div>
                         </div>
                       </div>
                     ))
                   : ''}
-            
               </div>
               <div className="payment">
                 <div className="paymentTitle">

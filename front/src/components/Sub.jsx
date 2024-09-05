@@ -17,13 +17,10 @@ const Sub = () => {
   const [skinType, setSkinType] = useState(0);
   axios.defaults.withCredentials = false;
 
-
-
-  
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/get_products');
+        const response = await axios.get('http://project.9seebird.site:8080/get_products');
         setProducts(response.data);
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -36,9 +33,9 @@ const Sub = () => {
   const checkProductInCart = async (productId, productSize, isDiy = false) => {
     try {
       // 장바구니에서 일반 상품과 DIY 상품 모두 가져오기
-      const response = await axios.get(`http://localhost:8080/get_cart/${userId}`);
+      const response = await axios.get(`http://project.9seebird.site:8080/get_cart/${userId}`);
       const { cartItems, diyItems } = response.data;
-      // console.log('Response data:', response.data); 
+      // console.log('Response data:', response.data);
       if (isDiy) {
         // DIY 아이템을 찾는 경우
         return diyItems.find((item) => item.product_id === productId && item.cart_item_id);
@@ -51,7 +48,6 @@ const Sub = () => {
       return null;
     }
   };
-  
 
   const putCart = async (product) => {
     if (!authData) {
@@ -75,7 +71,7 @@ const Sub = () => {
 
           // 서버에 수량 업데이트 요청
           await axios.put(
-            `http://localhost:8080/update_item/${userId}`,
+            `http://project.9seebird.site:8080/update_item/${userId}`,
             {
               product_id: product.product_id,
               quantity: newQuantity,
@@ -120,7 +116,7 @@ const Sub = () => {
 
       try {
         // 장바구니에 제품을 추가하는 API 호출
-        await axios.post(`http://localhost:8080/add_item/${userId}`, cartItem, {
+        await axios.post(`http://project.9seebird.site:8080/add_item/${userId}`, cartItem, {
           headers: { 'Content-Type': 'application/json' },
         });
 
@@ -168,12 +164,10 @@ const Sub = () => {
     setOpen(true); // 모달 열기
   };
 
-
   const handleCloseModal = () => {
     setOpen(false);
   };
- 
- 
+
   const modalClose = (e) => {
     // 모달 내부를 클릭하면 닫히지 않도록 이벤트 버블링 막기
     if (e.target.className === 'modal-backdrop') {
@@ -196,7 +190,7 @@ const Sub = () => {
   console.log(filteredProducts);
 
   return (
-    <div style={{ backgroundColor: 'rgb(246, 246, 242)', height: "100%" }}>
+    <div style={{ backgroundColor: 'rgb(246, 246, 242)', height: '100%' }}>
       <div className="skinModal">
         <div className="skin_modal_wrapper">
           <div className="skin_modal_filter">filter</div>
@@ -233,42 +227,41 @@ const Sub = () => {
         </div>
       </div>
       <div className={`sub_wrapper ${open ? 'blur' : ''}`}>
-      {filteredProducts
-  .filter((product) => product.product_id <= 6)  // product_id가 4 이하인 제품만 필터링
-  .map((product, key) => (
-    <div className='sub_item_wrapper' key={key}>
-      <div className="sub_item">
-        <div className="sub_img">
-        {product.product_id <= 5 ? (
-            <Link to={`/product_detail/${product.product_id}`}>
-              <div className="sub_hover">
-                <p>{product.p_name}</p>
-                <p>{product.p_price}원</p>
+        {filteredProducts
+          .filter((product) => product.product_id <= 6) // product_id가 4 이하인 제품만 필터링
+          .map((product, key) => (
+            <div className="sub_item_wrapper" key={key}>
+              <div className="sub_item">
+                <div className="sub_img">
+                  {product.product_id <= 5 ? (
+                    <Link to={`/product_detail/${product.product_id}`}>
+                      <div className="sub_hover">
+                        <p>{product.p_name}</p>
+                        <p>{product.p_price}원</p>
+                      </div>
+                    </Link>
+                  ) : product.product_id === 6 ? (
+                    <Link to="/diyItem">
+                      <div className="sub_hover">
+                        <p>{product.p_name}</p>
+                        <p>{product.p_price}원</p>
+                      </div>
+                    </Link>
+                  ) : (
+                    <div className="sub_hover">
+                      <p>{product.p_name}</p>
+                      <p>{product.p_price}원</p>
+                    </div>
+                  )}
+                  <img src={product.p_main_img} alt={product.p_name} />
+                </div>
+                <div className="sub_btn">
+                  <button onClick={() => putCart(product)}>장바구니에 넣기</button>
+                  <button onClick={() => purchaseOpen(product)}>구매하기</button>
+                </div>
               </div>
-            </Link>
-          ) : product.product_id === 6 ? (
-            <Link to="/diyItem">
-              <div className="sub_hover">
-                <p>{product.p_name}</p>
-                <p>{product.p_price}원</p>
-              </div>
-            </Link>
-          ) : (
-            <div className="sub_hover">
-              <p>{product.p_name}</p>
-              <p>{product.p_price}원</p>
             </div>
-          )}
-          <img src={product.p_main_img} alt={product.p_name} />
-        </div>
-        <div className="sub_btn">
-          <button onClick={() => putCart(product)}>장바구니에 넣기</button>
-          <button onClick={() => purchaseOpen(product)}>구매하기</button>
-        </div>
-      </div>
-    </div>
-  ))}
-
+          ))}
       </div>
       {/* <div className='sub_item_wrapper'>
           <div className="sub_item">

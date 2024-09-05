@@ -31,7 +31,7 @@ const Login = () => {
     console.log(values);
 
     axios
-      .post('http://localhost:8080/login', values)
+      .post('http://project.9seebird.site:8080/login', values)
       .then((res) => {
         if (res.status === 201) {
           console.log(res);

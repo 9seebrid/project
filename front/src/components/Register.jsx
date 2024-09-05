@@ -109,7 +109,7 @@ const Register = () => {
     }
 
     axios
-      .post('http://localhost:8080/register', values)
+      .post('http://project.9seebird.site:8080/register', values)
       .then((res) => {
         if (res.status === 201) {
           navigate('/login');

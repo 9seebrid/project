@@ -34,7 +34,7 @@ const Skin = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/get_product');
+        const response = await axios.get('http://project.9seebird.site:8080/get_product');
         setItem(response.data);
       } catch (error) {
         console.error('Error fetching items:', error);
